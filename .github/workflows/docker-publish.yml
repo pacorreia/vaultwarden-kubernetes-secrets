@@ -10,6 +10,9 @@ on:
       - develop
   workflow_dispatch:
 
+env:
+  PUBLISH_HARBOR: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' }}
+
 jobs:
   build-and-test:
     name: Build and Run Tests
@@ -227,6 +230,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Harbor
+        if: env.PUBLISH_HARBOR == 'true'
         uses: docker/login-action@v3
         with:
           registry: harbor.lag0.com.br
@@ -250,10 +254,10 @@ jobs:
           tags: |
             ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets:latest', github.repository_owner) || '' }}
             ghcr.io/${{ github.repository_owner }}/vaultwarden-kubernetes-secrets:${{ needs.prepare-versions.outputs.raw_tag }}
-            ${{ github.event_name != 'pull_request' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
-            ${{ github.event_name != 'pull_request' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:latest' || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:{0}', needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:latest' || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets:{0}', needs.prepare-versions.outputs.version) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -285,6 +289,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Harbor
+        if: env.PUBLISH_HARBOR == 'true'
         uses: docker/login-action@v3
         with:
           registry: harbor.lag0.com.br
@@ -308,10 +313,10 @@ jobs:
           tags: |
             ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-api:latest', github.repository_owner) || '' }}
             ghcr.io/${{ github.repository_owner }}/vaultwarden-kubernetes-secrets-api:${{ needs.prepare-versions.outputs.raw_tag }}
-            ${{ github.event_name != 'pull_request' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-api:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
-            ${{ github.event_name != 'pull_request' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:latest' || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:{0}', needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-api:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:latest' || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-api:{0}', needs.prepare-versions.outputs.version) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -343,6 +348,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Harbor
+        if: env.PUBLISH_HARBOR == 'true'
         uses: docker/login-action@v3
         with:
           registry: harbor.lag0.com.br
@@ -366,10 +372,10 @@ jobs:
           tags: |
             ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-dashboard:latest', github.repository_owner) || '' }}
             ghcr.io/${{ github.repository_owner }}/vaultwarden-kubernetes-secrets-dashboard:${{ needs.prepare-versions.outputs.raw_tag }}
-            ${{ github.event_name != 'pull_request' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-dashboard:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
-            ${{ github.event_name != 'pull_request' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:latest' || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
-            ${{ github.event_name != 'pull_request' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:{0}', needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('ghcr.io/{0}/vaultwarden-kubernetes-secrets-dashboard:{1}', github.repository_owner, needs.prepare-versions.outputs.version) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && 'harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:latest' || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:{0}', needs.prepare-versions.outputs.raw_tag) || '' }}
+            ${{ env.PUBLISH_HARBOR == 'true' && format('harbor.lag0.com.br/library/vaultwarden-kubernetes-secrets-dashboard:{0}', needs.prepare-versions.outputs.version) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -392,6 +398,7 @@ jobs:
           version: v3.14.4
 
       - name: Log in to Harbor
+        if: env.PUBLISH_HARBOR == 'true'
         uses: docker/login-action@v3
         with:
           registry: harbor.lag0.com.br
@@ -428,6 +435,7 @@ jobs:
           helm push "$CHART_FILE" oci://ghcr.io/${{ github.repository_owner }}/charts
       
       - name: Push Helm chart to Harbor
+        if: env.PUBLISH_HARBOR == 'true'
         run: |
           CHART_FILE="dist/vaultwarden-kubernetes-secrets-${{ needs.prepare-versions.outputs.version }}.tgz"
           helm push "$CHART_FILE" oci://harbor.lag0.com.br/charts
